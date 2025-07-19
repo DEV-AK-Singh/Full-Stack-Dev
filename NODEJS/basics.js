@@ -61,18 +61,18 @@
 // console.log("Debugging!");
 
 // sync code > nextTick > Promises > Timers > Check phase.
-console.log('1. Start');
+// console.log('1. Start');
 
-// Next tick queue
-process.nextTick(() => console.log('2. Next tick'));
+// // Next tick queue
+// process.nextTick(() => console.log('2. Next tick'));
 
-// Microtask queue (Promise)
-Promise.resolve().then(() => console.log('3. Promise'));
+// // Microtask queue (Promise)
+// Promise.resolve().then(() => console.log('3. Promise'));
 
-// Timer phase
-setTimeout(() => console.log('4. Timeout'), 0);
+// // Timer phase
+// setTimeout(() => console.log('4. Timeout'), 0);
 
-// Check phase
-setImmediate(() => console.log('5. Immediate'));
+// // Check phase
+// setImmediate(() => console.log('5. Immediate'));
 
-console.log('6. End');
+// console.log('6. End');
