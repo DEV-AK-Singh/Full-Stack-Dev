@@ -1,0 +1,69 @@
+// Put extracted folder to c-drive
+
+// start zookeeper
+cd KAFKA/kafka_2.13-3.9.1
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+// start kafka
+cd KAFKA/kafka_2.13-3.9.1
+bin/kafka-server-start.sh config/server.properties
+
+output:
+Starting zookeeper ... STARTED
+Starting kafka ... STARTED
+
+// Else use Kraft
+// generate uuid
+bin/kafka-storage.sh random-uuid
+
+// format the storage directory
+bin/kafka-storage.sh format -t 8Y3FHFDYRfeU6dKnqgfGDg -c config/kraft/server.properties
+
+// start kafka
+bin/kafka-server-start.sh config/kraft/server.properties
+
+// create a topic
+bin/kafka-topics.sh --create --topic my-topic --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1
+
+// delete a topic
+bin/kafka-topics.sh --delete --topic my-topic --bootstrap-server localhost:9092
+
+// test producer
+bin/kafka-console-producer.sh --topic my-topic --bootstrap-server localhost:9092
+
+// test consumer
+bin/kafka-console-consumer.sh --topic my-topic --bootstrap-server localhost:9092
+
+// list topics
+bin/kafka-topics.sh --list --bootstrap-server localhost:9092
+
+// describe a topic
+bin/kafka-topics.sh --describe --topic my-topic --bootstrap-server localhost:9092
+
+// create a topic with 3 partitions
+bin/kafka-topics.sh --create --topic my-topic --bootstrap-server localhost:9092 --replication-factor 1 --partitions 3
+
+// start producer with key
+bin/kafka-console-producer.sh --topic my-topic --bootstrap-server localhost:9092 --property parse.key=true --property key.separator=:
+
+// create consumer with group id
+bin/kafka-console-consumer.sh --topic my-topic --bootstrap-server localhost:9092 --group my-group-id
+
+// info consumer group
+bin/kafka-consumer-groups.sh --describe --group my-group-id --bootstrap-server localhost:9092
+
+// delete consumer group
+bin/kafka-consumer-groups.sh --delete --group my-group-id --bootstrap-server localhost:9092
+
+// 3 partitions with 4 groups
+bin/kafka-topics.sh --create --topic my-topic --bootstrap-server localhost:9092 --replication-factor 1 --partitions 3
+bin/kafka-console-consumer.sh --topic my-topic --bootstrap-server localhost:9092 --group my-group-id-1
+bin/kafka-console-consumer.sh --topic my-topic --bootstrap-server localhost:9092 --group my-group-id-2
+bin/kafka-console-consumer.sh --topic my-topic --bootstrap-server localhost:9092 --group my-group-id-3
+bin/kafka-console-consumer.sh --topic my-topic --bootstrap-server localhost:9092 --group my-group-id-4
+
+// check kafka running
+ps -ef | grep kafka
+
+// kafka ui using docker
+docker run -p 8080:8080 -e KAFKA_CLUSTERS_0_NAME=kafka-cluster -e KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=192.168.127.200:9092 --name kafkaui provectuslabs/kafka-ui
