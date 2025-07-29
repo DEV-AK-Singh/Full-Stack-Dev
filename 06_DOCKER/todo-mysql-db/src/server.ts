@@ -1,5 +1,6 @@
 import express from "express"; 
 import mysql from 'mysql2'; 
+import fs from 'fs/promises';
 
 interface Employee { 
     id: number | null,
@@ -10,9 +11,23 @@ interface Employee {
     mob: string | null
 }
 
+// const dummyEmp = { 
+//     name: 'Abhishek',
+//     design: 'Software Engineer',
+//     dept: 'IT',
+//     salary: 100000,
+//     mob: null
+// }
+
 const app: express.Application = express(); 
 
 app.use(express.json());
+
+app.use(async (req, res, next) => {
+    const req_info = new Date().toISOString() + ' ' + req.method + ' ' + req.url + ' ' + req.ip; 
+    await fs.appendFile('server.log', req_info + '\n');
+    next();
+});
 
 const pool = mysql.createPool({
     // host: 'localhost', // for local host 
