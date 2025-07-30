@@ -1,0 +1,46 @@
+# docker run -d -p 27017:27017 --name=mongo-db -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=root --network=mongo-net mongo:latest
+# docker run -d -p 3000:3000 --name=mongo-backend-container --network=mongo-net mongo-backend:01
+# docker run -d -p 5173:5173 --name=mongo-frontend-container --network=mongo-net mongo-frontend:01
+
+version: "3.7"
+services:
+  mongo-frontend:
+    build: ./mongo-frontend
+    image: mongo-frontend:01
+    container_name: mongo-frontend-container
+    depends_on:
+      - mongo-backend
+    ports:
+      - "5173:5173"
+    networks:
+      - mongo-net
+  mongo-backend:
+    build: ./mongo-backend
+    image: mongo-backend:01
+    container_name: mongo-backend-container
+    depends_on:
+      mongo-db:
+        condition: service_healthy 
+    ports:
+      - "3000:3000"
+    networks:
+      - mongo-net
+  mongo-db:
+    image: mongo:latest
+    container_name: mongo-db
+    ports:
+      - "27017:27017"
+    networks:
+      - mongo-net
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    healthcheck:
+      test: "mongosh --quiet"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s # Give MongoDB time to start up
+networks:
+  mongo-net:
+    driver: bridge
