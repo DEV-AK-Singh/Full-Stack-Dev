@@ -1,0 +1,23 @@
+{
+  "name": "mongo-backend",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "abhishek singh",
+  "type": "module",
+  "main": "server.ts",
+  "scripts": {
+    "start": "node build/server.js",
+    "dev": "nodemon --exec tsx src/server.ts",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.3",
+    "@types/mongoose": "^5.11.96",
+    "express": "^5.1.0",
+    "mongoose": "^8.17.0"
+  }
+}
