@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend-app
+  template:
+    metadata:
+      labels:
+        app: backend-app
+    spec:
+      containers:
+      - name: backend-app-container
+        image: abhisheksinghdocker15101999/mongo-backend:v1.0
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MONGO_USER
+          value: root
+        - name: MONGO_PASSWORD
+          value: root      
+        - name: MONGO_PORT
+          value: '27017'
+        - name: MONGO_HOST
+          value: mongodb-service   
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend-app
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
