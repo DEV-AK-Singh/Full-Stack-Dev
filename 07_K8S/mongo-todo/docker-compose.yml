@@ -16,6 +16,7 @@ services:
       - mongo-backend
     ports:
       - "5173:5173"
+      - "80:80"
     networks:
       - mongo-net
   mongo-backend:
